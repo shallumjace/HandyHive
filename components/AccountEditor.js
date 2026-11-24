@@ -102,7 +102,6 @@ export default function AccountEditor({ role }) {
         </View>
       )}
       <TouchableOpacity style={styles.logout} onPress={logout}><Text style={{color:'#EB5757',fontWeight:'bold'}}>Logout</Text></TouchableOpacity>
-      <Text style={styles.disclaimer}>School demonstration only. This project stores passwords locally and requires a secure backend for real users.</Text>
     </ScrollView>
   );
 }
