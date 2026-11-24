@@ -35,11 +35,12 @@ import ProfileWorker from './screens/ProfileWorker';
 import HomepageAdmin from './screens/HomepageAdmin';
 import CategoryListingAdmin from './screens/CategoryListingAdmin';
 import UsersAdmin from './screens/UsersAdmin';
-import AnalyticsAdmin from './screens/AnalyticsAdmin';
 import ProfileAdmin from './screens/ProfileAdmin';
 
 function AppContent() {
-  const { currentScreen, navigate, user } = useContext(AppContext);
+  const { currentScreen, navigate, user, ready } = useContext(AppContext);
+
+  if (!ready) return <View style={{flex:1,justifyContent:'center',alignItems:'center'}}><Text>Loading Handy Hive...</Text></View>;
 
   // ----------------------------------------------------
   //  AUTHENTICATION (No User Logged In)
@@ -60,7 +61,6 @@ function AppContent() {
         case 'AdminHome': return <HomepageAdmin />;
         case 'AdminCategories': return <CategoryListingAdmin />;
         case 'AdminUsers': return <UsersAdmin />;
-        case 'AdminAnalytics': return <AnalyticsAdmin />;
         case 'AdminProfile': return <ProfileAdmin />;
         default: return <HomepageAdmin />;
       }
@@ -84,11 +84,6 @@ function AppContent() {
           <TouchableOpacity style={styles.tabBtn} onPress={() => navigate('AdminUsers')}>
             <Ionicons name="people" size={20} color={currentScreen === 'AdminUsers' ? '#EB5757' : '#777'} />
             <Text style={[styles.tabTxt, currentScreen === 'AdminUsers' && styles.activeAdminTxt]}>Users</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.tabBtn} onPress={() => navigate('AdminAnalytics')}>
-            <Ionicons name="pie-chart" size={20} color={currentScreen === 'AdminAnalytics' ? '#EB5757' : '#777'} />
-            <Text style={[styles.tabTxt, currentScreen === 'AdminAnalytics' && styles.activeAdminTxt]}>Metrics</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.tabBtn} onPress={() => navigate('AdminProfile')}>

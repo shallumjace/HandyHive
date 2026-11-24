@@ -17,7 +17,7 @@ export default function RegisterRoleScreen() {
 
       <TouchableOpacity style={styles.choiceCard} onPress={() => navigate('RegisterFormScreen', 'Worker')}>
         <Text style={styles.choiceTitle}>Register as Service Provider</Text>
-        <Text style={styles.choiceDesc}>List your trade specialties, set your hourly rate, and manage inbound jobs.</Text>
+        <Text style={styles.choiceDesc}>List your trade specialties, set your minimum service fee, and manage inbound jobs.</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.backButton} onPress={() => navigate('Login')}>

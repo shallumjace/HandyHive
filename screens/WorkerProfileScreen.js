@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { AppContext } from '../context/AppContext';
+import { money, averageRating } from '../data/domain';
 
 export default function WorkerProfileScreen() {
-  const { selectedWorkerId, workers, navigate } = useContext(AppContext);
+  const { selectedWorkerId, workers, reviews, navigate } = useContext(AppContext);
 
   const workerProfile = workers.find(w => w.id === selectedWorkerId);
 
@@ -23,9 +24,10 @@ export default function WorkerProfileScreen() {
         <View style={styles.profileHeaderCard}>
           <Text style={styles.pName}>{workerProfile.name}</Text>
           <Text style={styles.pSpec}>{workerProfile.specialty} Specialist</Text>
-          <Text style={styles.pRate}>{workerProfile.rate}</Text>
+          <Text style={styles.pRate}>Minimum service fee: {money(workerProfile.minimumServiceFee)}</Text>
         </View>
 
+        <Text style={styles.rowItem}>Rating: {averageRating(reviews,workerProfile.id)==null?"No ratings yet":`${averageRating(reviews,workerProfile.id).toFixed(1)} / 5`}</Text>
         {/* METADATA STRUCT TABLE */}
         <Text style={styles.sectionHeader}>Profile Specifications</Text>
         <View style={styles.infoSheet}>

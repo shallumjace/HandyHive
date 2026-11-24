@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Modal, Alert } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { AppContext } from '../context/AppContext';
+import { money } from '../data/domain';
 
 export default function UsersAdmin() {
   const { clients, workers, deleteUserAccount } = useContext(AppContext);
@@ -97,7 +98,7 @@ export default function UsersAdmin() {
                 {activeTab === 'Worker' && (
                   <>
                     <Text style={styles.detailItemText}><Text style={styles.modalLabelField}>Specialty:</Text> {targetUser.specialty}</Text>
-                    <Text style={styles.detailItemText}><Text style={styles.modalLabelField}>Rate:</Text> {targetUser.rate}</Text>
+                    <Text style={styles.detailItemText}><Text style={styles.modalLabelField}>Minimum service fee:</Text> {money(targetUser.minimumServiceFee)}</Text>
                     <Text style={styles.detailItemText}><Text style={styles.modalLabelField}>Bio:</Text> {targetUser.bio}</Text>
                     <Text style={styles.detailItemText}><Text style={styles.modalLabelField}>Credentials/Certifications:</Text> {targetUser.certificate}</Text>
                   </>

@@ -9,6 +9,10 @@ const KEYS = {
   WORKERS: 'HH_STORAGE_WORKERS',
   CATEGORIES: 'HH_STORAGE_CATEGORIES',
   BOOKINGS: 'HH_STORAGE_BOOKINGS',
+  REPORTS: 'HH_STORAGE_REPORTS',
+  REVIEWS: 'HH_STORAGE_REVIEWS',
+  NOTIFICATIONS: 'HH_STORAGE_NOTIFICATIONS',
+  ARCHIVED_CATEGORIES: 'HH_STORAGE_ARCHIVED_CATEGORIES',
 }; 
 
 // ==========================================
@@ -97,18 +101,22 @@ const INITIAL_BOOKINGS = [
 // SECTION 3: SYSTEM LOADER ENGINE
 // ==========================================
 export async function initializeDatabase() {
-  try {
-    const adminCheck = await AsyncStorage.getItem(KEYS.ADMINS);
-    if (!adminCheck) {
-      await AsyncStorage.setItem(KEYS.ADMINS, JSON.stringify(INITIAL_ADMINS));
-      await AsyncStorage.setItem(KEYS.CLIENTS, JSON.stringify(INITIAL_CLIENTS));
-      await AsyncStorage.setItem(KEYS.WORKERS, JSON.stringify(INITIAL_WORKERS));
-      await AsyncStorage.setItem(KEYS.CATEGORIES, JSON.stringify(INITIAL_CATEGORIES));
-      await AsyncStorage.setItem(KEYS.BOOKINGS, JSON.stringify(INITIAL_BOOKINGS));
-      console.log('HandyHive Database Engine Initialized with 37 original profiles.');
-    }
-  } catch (error) {
-    console.error('Database Engine initialization crash: ', error);
+  // Initialize each key independently; older installs may already have ADMINS.
+  // Never wipe real users or bookings just to add new collections.
+  const seeds = {
+    ADMINS: INITIAL_ADMINS,
+    CLIENTS: INITIAL_CLIENTS,
+    WORKERS: INITIAL_WORKERS,
+    CATEGORIES: INITIAL_CATEGORIES,
+    BOOKINGS: INITIAL_BOOKINGS,
+    REPORTS: [],
+    REVIEWS: [],
+    NOTIFICATIONS: [],
+    ARCHIVED_CATEGORIES: [],
+  };
+  for (const [key, seed] of Object.entries(seeds)) {
+    const existing = await AsyncStorage.getItem(KEYS[key]);
+    if (existing === null) await AsyncStorage.setItem(KEYS[key], JSON.stringify(seed));
   }
 }
 
@@ -120,7 +128,8 @@ export async function getData(key) {
     const data = await AsyncStorage.getItem(KEYS[key]);
     return data ? JSON.parse(data) : [];
   } catch (e) {
-    return [];
+    console.error(`Failed reading ${key}`, e);
+    throw e;
   }
 }
 
@@ -128,7 +137,8 @@ export async function saveData(key, data) {
   try {
     await AsyncStorage.setItem(KEYS[key], JSON.stringify(data));
   } catch (e) {
-    console.error(`Failed saving cluster to ${key}`);
+    console.error(`Failed saving cluster to ${key}`, e);
+    throw e;
   }
 }
 
@@ -149,13 +159,11 @@ export async function registerUserInStorage(newUser) {
   }
 
   if (newUser.role === 'Client') {
-    const nextIdNumber = clients.length + 1;
-    newUser.id = `client${nextIdNumber}`;
+    newUser.id = `client_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
     clients.push(newUser);
     await saveData('CLIENTS', clients);
   } else if (newUser.role === 'Worker') {
-    const nextIdNumber = workers.length + 1;
-    newUser.id = `worker${nextIdNumber}`;
+    newUser.id = `worker_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
     workers.push(newUser);
     await saveData('WORKERS', workers);
   }

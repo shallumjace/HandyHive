@@ -1,10 +1,11 @@
+import { notice, confirmAction } from '../utils/feedback';
 import React, { useState, useContext } from 'react';
 import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { AppContext } from '../context/AppContext';
 
 export default function CategoryListingAdmin() {
-  const { categories, workers, addCategory, deleteCategory } = useContext(AppContext);
+  const { categories, workers, addCategory, archiveCategory, archivedCategories } = useContext(AppContext);
   const [newCat, setNewCat] = useState('');
 
   const handleCreate = async () => {
@@ -12,20 +13,21 @@ export default function CategoryListingAdmin() {
     const success = await addCategory(newCat.trim());
     if (success) {
       setNewCat('');
-      Alert.alert('Operation Success', 'New category cluster successfully saved to storage.');
+      notice('Operation Success', 'New category cluster successfully saved to storage.');
     } else {
-      Alert.alert('Duplicate Node', 'This specialty category already exists inside the engine.');
+      notice('Duplicate Node', 'This specialty category already exists inside the engine.');
     }
   };
 
-  const handleConfirmDelete = (catName) => {
-    Alert.alert(
-      'Deletion Warning',
-      `Deleting "${catName}" will permanently delete all platform workers registered under this specialty. Proceed?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Delete Storage Records', style: 'destructive', onPress: () => deleteCategory(catName) }
-      ]
+  const handleArchiveToggle = (name) => {
+    const isArchived = archivedCategories.includes(name);
+    confirmAction(
+      isArchived ? 'Restore category?' : 'Archive category?',
+      isArchived ? `Make "${name}" available for new bookings again?` : `Archive "${name}"? Existing workers and booking history will be preserved.`,
+      async () => {
+        try { await archiveCategory(name,!isArchived); }
+        catch(e) { notice('Unable to update',e.message); }
+      }, isArchived ? 'Unarchive' : 'Archive', !isArchived
     );
   };
 
@@ -59,11 +61,11 @@ export default function CategoryListingAdmin() {
           return (
             <View key={index} style={styles.categoryTile}>
               <View>
-                <Text style={styles.categoryNameText}>{cat}</Text>
+                <Text style={styles.categoryNameText}>{cat} {archivedCategories.includes(cat) ? "(Archived)" : ""}</Text>
                 <Text style={styles.subCounterText}>{matchingCount} Specialists Registered</Text>
               </View>
-              <TouchableOpacity style={styles.deleteActionBtn} onPress={() => handleConfirmDelete(cat)}>
-                <Ionicons name="trash-outline" size={18} color="#FF3B30" />
+              <TouchableOpacity style={styles.deleteActionBtn} onPress={() => handleArchiveToggle(cat)}>
+                <Ionicons name={archivedCategories.includes(cat) ? "refresh-outline" : "archive-outline"} size={20} color="#EB5757" />
               </TouchableOpacity>
             </View>
           );

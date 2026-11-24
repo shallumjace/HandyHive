@@ -6,7 +6,6 @@ import { AppContext } from '../context/AppContext';
 import HomepageAdmin from './HomepageAdmin';
 import CategoryListingAdmin from './CategoryListingAdmin';
 import UsersAdmin from './UsersAdmin';
-import AnalyticsAdmin from './AnalyticsAdmin';
 import ProfileAdmin from './ProfileAdmin';
 
 export default function AdminDashboard() {
@@ -17,7 +16,6 @@ export default function AdminDashboard() {
       case 'AdminHome': return <HomepageAdmin />;
       case 'AdminCategories': return <CategoryListingAdmin />;
       case 'AdminUsers': return <UsersAdmin />;
-      case 'AdminAnalytics': return <AnalyticsAdmin />;
       case 'AdminProfile': return <ProfileAdmin />;
       default: return <HomepageAdmin />;
     }
@@ -46,11 +44,6 @@ export default function AdminDashboard() {
         <TouchableOpacity style={styles.tabBtn} onPress={() => navigate('AdminUsers')}>
           <Ionicons name="people" size={20} color={currentScreen === 'AdminUsers' ? '#F4B41A' : '#777'} />
           <Text style={[styles.tabTxt, currentScreen === 'AdminUsers' && styles.activeTxt]}>Users</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.tabBtn} onPress={() => navigate('AdminAnalytics')}>
-          <Ionicons name="bar-chart" size={20} color={currentScreen === 'AdminAnalytics' ? '#F4B41A' : '#777'} />
-          <Text style={[styles.tabTxt, currentScreen === 'AdminAnalytics' && styles.activeTxt]}>Analytics</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.tabBtn} onPress={() => navigate('AdminProfile')}>

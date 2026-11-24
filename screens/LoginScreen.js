@@ -6,6 +6,7 @@ export default function LoginScreen() {
   const { login, navigate } = useContext(AppContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const executeLoginSubmit = () => {
     if (!email.trim() || !password) {
@@ -21,7 +22,10 @@ export default function LoginScreen() {
       <Text style={styles.tagline}>Welcome back!</Text>
 
       <TextInput placeholder="Email" placeholderTextColor="#999" value={email} onChangeText={setEmail} style={styles.field} autoCapitalize="none" keyboardType="email-address" />
-      <TextInput placeholder="Password" placeholderTextColor="#999" secureTextEntry value={password} onChangeText={setPassword} style={styles.field} />
+      <View style={{flexDirection:'row',alignItems:'center'}}>
+        <TextInput placeholder="Password" placeholderTextColor="#999" secureTextEntry={!showPassword} value={password} onChangeText={setPassword} style={[styles.field,{flex:1}]} />
+        <TouchableOpacity onPress={() => setShowPassword(v => !v)} accessibilityLabel={showPassword?'Hide password':'Show password'} style={{padding:10,marginBottom:14}}><Text>{showPassword?'Hide':'Show'}</Text></TouchableOpacity>
+      </View>
 
       <TouchableOpacity style={styles.loginButton} onPress={executeLoginSubmit}>
         <Text style={styles.loginText}>Sign In</Text>

@@ -1,18 +1,19 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { AppContext } from '../context/AppContext';
+import { money, averageRating } from '../data/domain';
 
 const { width } = Dimensions.get('window');
 
 export default function HomeScreen() {
-  const { categories, workers, navigate, setSelectedWorkerId } = useContext(AppContext);
+  const { activeCategories: categories, workers, reviews, navigate, setSelectedWorkerId } = useContext(AppContext);
   const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
-    if (categories.length > 0 && !selectedCategory) {
+    if (categories.length > 0 && !categories.includes(selectedCategory)) {
       setSelectedCategory(categories[0]);
     }
-  }, [categories]);
+  }, [categories,selectedCategory]);
 
   const filteredWorkers = workers.filter(w => w.specialty === selectedCategory);
 
@@ -65,7 +66,8 @@ export default function HomeScreen() {
               <View style={{ flex: 1, marginLeft: 12 }}>
                 <Text style={styles.workerName}>{worker.name}</Text>
                 <Text style={styles.workerSpecText}>{worker.specialty} • {worker.certificate}</Text>
-                <Text style={styles.workerRateText}>{worker.rate}</Text>
+                <Text style={styles.workerRateText}>Minimum service fee: {money(worker.minimumServiceFee)}</Text>
+                <Text style={styles.workerSpecText}>{averageRating(reviews,worker.id)==null ? "No ratings yet" : `${averageRating(reviews,worker.id).toFixed(1)} ★`}</Text>
               </View>
             </View>
           </TouchableOpacity>

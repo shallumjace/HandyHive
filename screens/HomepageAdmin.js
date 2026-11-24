@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import ReportManager from '../components/ReportManager';
 import { AppContext } from '../context/AppContext';
 
 export default function HomepageAdmin() {
@@ -50,18 +51,8 @@ export default function HomepageAdmin() {
         </View>
       ))}
 
-      {/* ==========================================
-          STATIC CLIENT COMPLAINTS & FEEDBACK REPORTS
-          ========================================== */}
-      <Text style={styles.sectionHeader}>Recent Client Reports Summary</Text>
-      <View style={styles.reportBox}>
-        <Text style={styles.reportAuthor}>Reported by: John Smith (client2)</Text>
-        <Text style={styles.reportContent}>"Worker arrived 15 minutes late for the appointment schedule, but the patch repair work was completed successfully."</Text>
-      </View>
-      <View style={styles.reportBox}>
-        <Text style={styles.reportAuthor}>Reported by: Maria Clara (client3)</Text>
-        <Text style={styles.reportContent}>"Excellent troubleshooting performance from the electrical specialist. Highly recommended platform worker."</Text>
-      </View>
+      {/* Client-submitted reports, updated by the shared store */}
+      <ReportManager />
     </ScrollView>
   );
 }
